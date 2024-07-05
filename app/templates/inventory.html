@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+<!-- inspo: https://www.bootdey.com/snippets/view/Clients -->
+<!-- shift alt f to format code -->
+
+{% block content %}
+
+<div class="pagination mt-4">
+  <p><a href="{{ url_for('index.index') }}" class="btn btn-light">Back to Home</a></p>
+</div>
+
+<h2 class="" style="text-align: center; height:35px">Let's get that bag {{ current_user.full_name }}.</h2>
+<br>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-dismissible alert-info">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <ul class="list-unstyled">
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="container">
+  <div class="container-fluid p-0">
+    <div class="row">
+      <div class="col-xl-8">
+
+        <div class="card text-white">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+
+              <button class="card-header pb-0"
+                style="padding: 0; outline: none; border: none; background-color: transparent;" data-toggle="collapse"
+                data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <i class="material-icons" style="font-size:40px;">add_circle</i>
+                Add new item
+              </button>
+            </h5>
+          </div>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+              <form action="{{ url_for('inventory.addItemToInventory', seller_id=current_user.id) }}" method="POST">
+                <div class="mb-3">
+                  <input type="text" name="name" class="form-control" placeholder="Product Name" required>
+                </div>
+                <div class="mb-3">
+                  <textarea name="descr" class="form-control" placeholder="Product Description" rows="3"
+                    required></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-4">
+                    <input type="number" name="price" step="1" class="form-control" placeholder="Price per Item"
+                      required>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <input type="text" name="quantity" step="1" class="form-control" placeholder="Quantity" required>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <select name="category_id" class="form-control" placeholder="Category">
+                      <option value="0">Food</option>
+                      <option value="1">Art</option>
+                      <option value="2">Toys</option>
+                      <option value="3">Household Goods</option>
+                      <option value="4" selected>Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <input type="file" name="image_url" class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                  <input type="submit" class="btn btn-success" value="Add New Product">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <br>
+
+        <div class="card">
+          <div class="card-header pb-0">
+            <h3 class="card-title mb-0">Inventory:</h3>
+            <br>
+          </div>
+
+          <div class="card-body">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+              <div class="navbar-nav">
+                <a class="navbar-brand">Sorts:</a>
+                <a href="{{ url_for('inventory.inventory', seller_id=current_user.id) }}"
+                  class="nav-item nav-link active">Name</a>
+                <a href="{{ url_for('inventory.inventoryByPrice', seller_id=current_user.id) }}"
+                  class="nav-item nav-link active">Price</a>
+                <a href="{{ url_for('inventory.inventoryByQuantity', seller_id=current_user.id) }}"
+                  class="nav-item nav-link active">Quantity</a>
+              </div>
+              <form class="form-inline ml-auto"
+                action="{{ url_for('inventory.inventoryBySearchTerm', seller_id=current_user.id, search_term = searchInventory) }}"
+                method="POST" novalidate>
+                <input class="form-control mr-sm-2" type="search" name="searchInventory" value="{{ searchterm or ''}}"
+                  placeholder="Keyword..." aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+              </form>
+            </nav>
+            <br>
+
+            <table class="table table-striped" style="width:100%">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col" style="width:40%">Product</th>
+                  <th scope="col" style="text-justify:center">Update Price</th>
+                  <th scope="col" style="text-justify:center">Update Quantity</th>
+                  <th scope="col" style="text-justify:center">Remove</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in inventory %}
+                <tr>
+                  <td scope="row" style="word-wrap: break-word" class="wrap-text"><span
+                      style="max-width:50px;"></span>{{
+                    item.name }}<span>
+                  </td>
+                  <td>
+                    <form action="{{ url_for('inventory.updateInventoryPrice', seller_id=item.seller_id, id=item.id) }}"
+                      method="POST">
+                      <input type="number" name="price" step="0.01" placeholder="{{ item.price }}"
+                        style="width:90px; height:40px">
+                      <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="material-icons">update</i>
+                      </button>
+                    </form>
+                  </td>
+                  <td>
+                    <form
+                      action="{{ url_for('inventory.updateInventoryQuantity', seller_id=item.seller_id, id=item.id) }}"
+                      method="POST">
+                      <input type="number" name="quantity" placeholder="{{ item.quantity }}"
+                        style="width:80px; height:40px">
+                      <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="material-icons">update</i>
+                      </button>
+                    </form>
+                  </td>
+                  <td style="width:50px">
+                    <form
+                      action="{{ url_for('inventory.deleteItemFromInventory', seller_id=item.seller_id, id=item.id) }}"
+                      method="POST">
+                      <button type="submit" class="btn btn-danger">
+                        <i class="material-icons">delete</i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+
+            {{ pagination.info }}
+            {{ pagination.links }}
+
+          </div>
+        </div>
+
+      </div>
+      <div class="col-xl-4">
+        <div class="card">
+          <div class="card-header pb-0">
+            <h3 class="card-title mb-0">Analytics:</h3>
+            <br>
+          </div>
+          <div class="card-body">
+            <canvas id="sellerRatingAggChart" width="400" height="200"></canvas>
+            <script>
+              data = {{ seller_rating_aggregate }}
+
+              createChart(data)
+
+              function createChart(data) {
+                var myChart = new Chart(document.getElementById('sellerRatingAggChart'), {
+                  type: 'bar',
+                  data: {
+                    labels: Array.from({ length: data.length }, (_, i) => `${i + 1} Stars`),
+                    datasets: [{
+                      data: data,
+                      backgroundColor: ["#ffcd3c"],
+                      borderColor: ["#e3af19"],
+                      borderWidth: 3
+                    }]
+                  },
+                  options: {
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: 'Average Ratings',
+                        fontSize: 30,
+                        fontColor: '#333'
+                      },
+                      legend: {
+                        display: false
+                      }
+                    },
+                    scales: {
+                      y: { min: 0, max: 1 }
+                    }
+                  }
+                });
+              }
+            </script>
+
+            <canvas id="RevenueOverTimeChart" width="400" height="200"></canvas>
+            <script>
+              data = {{ revenue_over_time }}
+
+              createChart(data)
+
+              function createChart(data) {
+                var myChart = new Chart(document.getElementById
+                  ("RevenueOverTimeChart"), {
+                  type: 'bar',
+                  data: {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [{
+                      data: data,
+                      backgroundColor: ["#50C878"],
+                      borderColor: ['#AAFF00'],
+                      borderWidth: 3
+                    }]
+                  },
+                  options: {
+                    plugins: {
+                      title: {
+                        display: true,
+                        text: 'Revenue Over Time',
+                        fontSize: 30,
+                        fontColor: '#333'
+                      },
+                      legend: {
+                        display: false
+                      }
+                    },
+                    tooltips: {
+                      enabled: false
+                    }
+                  }
+                });
+              }
+            </script>
+
+            <br>
+            <p><a href="{{ url_for('inventory.orders', seller_id=current_user.id) }}" class="btn btn-primary" style="width:100%; height: 60px; vertical-align: middle;">View Orders</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+{% endblock %}

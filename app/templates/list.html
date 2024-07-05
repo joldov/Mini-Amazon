@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.product_search') }}'">Search Products</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('index.history',page=1) }}'">Purchase History</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('carts.cart') }}'">View Cart</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('inventory.inventory') }}'">Inventory</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('reviews.reviews') }}'">Your Reviews</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.get_balance', uid=current_user.id) }}'">Bank Info</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.list_users', page=1) }}'">See All Users</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.category') }}'">Add Category</button>
+  </div>
+  <br></br>
+{% else %}
+<p><a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a> to see your Info!</p>
+{% endif %}
+
+<button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.product_list', limit=limit+10) }}'">Next Page</button>
+<a href="{{ url_for('products.product_list', limit = limit-10) }}" type="button" class="btn btn-light">Previous Page</a>
+<br></br>
+
+<h2>Products for sale:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Image</th>
+      <th scope="col">Name</th>
+      <th scope="col">Description</th>
+      <th scope="col">Price</th>
+      <th scope="col">Category</th>
+      <th scope="col">Available</th>
+      <th scope="col">Seller</th>
+      <th scope="col">Add to Cart</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in avail_products%}
+      
+        <tr>
+          <th scope="row">{{product.id}}</th>
+          <td><img src="{{ url_for('static', filename=product.image_url) }}"></td>
+          <td><a href="{{ url_for('products.product_page', k = product.id) }}" type="button" class="btn btn-light">{{product.name}}</a></td>
+          <td>{{product.descr}}</td>
+          <td>{{product.price}}</td>
+          <td>{{product.category_id}}</td>  
+          <td>{{product.available}}</td>
+          <td>{{product.seller_id}}</td>
+          <td>
+            <form method="post" action="{{ url_for('carts.add_to_cart', product_id=product.id, seller_id=product.seller_id) }}">
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <input type="submit" value="Add to Cart" class="btn btn-primary">
+            </form>
+          </td>
+        </tr>
+      
+    {% endfor %}
+  </tbody>
+</table>
+
+
+{% endblock %}

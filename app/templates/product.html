@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!--Product description-->
+
+<h2>{{ product.name }}</h2>
+
+<img src="{{ url_for('static', filename=product.image_url) }}">
+
+<h2>${{ product.price }}</h2>
+
+<p>Category: {{ product.category_id }}</p>
+
+<h3>Description</h3>
+<p>{{ product.descr }}</p>
+
+<!--Add to cart-->
+
+<h2>Cart:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Change Quantity</th>
+      <th scope="col">Unit Price</th>
+      <th scope="col">Total Price</th>
+      <th scope="col">Seller ID</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart%}
+      <tr>
+        <th scope="row">{{item.product}}</th>
+        <td>{{item.quantity}}</td>
+        <td>
+          <form method="post" action="{{ url_for('carts.increment_item_quantity', product_id=item.product_id) }}">
+            <input type="hidden" name="product_id" value="{{ item.product_id }}">
+            <input type="submit" value="+" class="btn btn-light">
+          </form>
+          <form method="post" action="{{ url_for('carts.decrement_item_quantity', cart_id=item.id, quantity = item.quantity) }}">
+            <input type="hidden" name="cart_id" value="{{ item.id }}">
+            <input type="hidden" name="quantity" value="{{ item.quantity }}">
+            <input type="submit" value="-" class="btn btn-light">
+          </form>
+        </td>
+        <td>{{item.unit_price}}</td>
+        <td>{{item.total_price}}</td>
+        <td>{{item.seller}}</td>
+        <td>
+          <form method="post" action="{{ url_for('carts.delete_item_from_cart', cart_id=item.id) }}">
+            <input type="hidden" name="cart_id" value="{{ item.id }}">
+            <input type="submit" value="Remove" class="btn btn-light">
+          </form>
+        </td>
+        <td><p><a href="{{ url_for('carts.checkout', cart=item.id) }}"class="btn btn-light">checkout</a></p></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p><a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Go Back</a></p>
+<br><br>
+
+
+{% if top_3_reviews %}
+<h2>Top 3 Most Popular Reviews</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
+      <th scope="col">Time Reviewed</th>
+      <th scope="col">Number of Upvotes</th>
+      <th scope="col">Upvote</th>
+      <th scope="col">Review Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in top_3_reviews %}
+    <tr>
+      <td>{{ review.uid }}</td>
+      <td>{{ review.rating }}</td>
+      <td>{{ review.review }}</td>
+      <td>{{ review.time_reviewed }}</td>
+      <td>{{ review.num_votes }}</td>
+      {% if current_user.is_authenticated %}
+      <td>
+        <form
+          action="{{ url_for('reviews.add_or_remove_upvote', product_id = product.id, product_review_id=review.id, rater_id=current_user.id) }}"
+          method="POST">
+          <input type="submit" value="Upvote" />
+        </form>
+      </td>
+      {% else %}
+      <td>Login to upvote</td>
+      {% endif %}
+      {% if review.imagepath != "" %}
+      <td>
+        <img src="{{ review.imagepath }}" alt="Review Image" width="200" height="200">
+      </td>
+      {% else %}
+      <td>No Image</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<!-- Move the JavaScript code outside of the loop -->
+<script>
+  $(document).ready(function () {
+    // Attach a click event handler to the upvote button
+    $('.upvote-btn').click(function () {
+      var productReviewId = $(this).data('product-review-id');
+      var raterId = /* provide the rater_id here */;
+      var productId = {{ product.id }}
+    }; // Fetch the product_id from the server response or a predefined variable
+
+    // Send an asynchronous POST request to the server
+    $.ajax({
+      type: 'POST',
+      url: `/products/${productId}/reviews/${productReviewId}/upvote/${raterId}`,
+      success: function (response) {
+        // Update the upvote count in the UI
+        var upvoteCountElement = $(`.upvote-count[data-product-review-id="${productReviewId}"]`);
+        var newUpvoteCount = parseInt(upvoteCountElement.text()) + response.upvote_change;
+        upvoteCountElement.text(newUpvoteCount);
+      },
+      error: function (error) {
+        console.error('Error:', error);
+      }
+    });
+  });
+  });
+</script>
+
+<!--Reviews-->
+
+<h2>Reviews for {{ product.name }}:</h2>
+{% if reviews %}
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">User</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
+      <th scope="col">Time Reviewed</th>
+      <th scope="col">Upvotes</th>
+      <th scope="col">Vote</th>
+      <th scope="col">Review Image</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews %}
+    <tr>
+      <td>{{ review.uid }}</td>
+      <td>{{ review.rating }}</td>
+      <td>{{ review.review }}</td>
+      <td>{{ review.time_reviewed }}</td>
+      <td>{{ review.num_votes }}</td>
+      {% if current_user.is_authenticated %}
+      <td>
+        <form
+          action="{{ url_for('reviews.add_or_remove_upvote', product_id = product.id, product_review_id=review.id, rater_id=current_user.id) }}"
+          method="POST">
+          <input type="submit" value="Upvote" />
+        </form>
+      </td>
+      {% else %}
+      <td>Login to upvote</td>
+      {% endif %}
+      {% if review.imagepath != "" %}
+      <td>
+        <img src="{{ review.imagepath }}" alt="Review Image" width="200" height="200">
+      </td>
+      {% else %}
+      <td>No Image</td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No reviews available for this product.</p>
+{% endif %}
+<p><a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Go Home</a></p>
+{% endblock %}

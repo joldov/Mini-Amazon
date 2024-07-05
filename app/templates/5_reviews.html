@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+
+  {% if number > 1 %}
+  <a href="{{ url_for('reviews.all_reviews', uid = current_user.id, page=number-1)}}" class="btn btn-light">Prev</a>
+  {% endif %}
+
+  {% if number < pages %} <a href="{{ url_for('reviews.all_reviews',uid = current_user.id, page=number+1)}}"
+    class="btn btn-light ml-2">Next</a>
+    {% endif %}
+
+    <a href="{{ url_for('index.index') }}" class="btn btn-light ml-2">Go Home</a>
+
+    <a href="{{ url_for('reviews.reviewsbyUpvotes') }}" class="btn btn-light ml-2">Sort by Upvotes</a>
+
+
+    <p></p>
+
+    <h2>Your reviews</h2>
+    <div class="container mt-4">
+      <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; background-color: #f9f9f9;">
+        <h4 style="margin-bottom: 10px;">Your Average Rating: {{user_avg_rating}}</h4>
+        <h4>Number of Ratings: {{num_ratings}}</h4>
+
+      </div>
+    </div>
+
+    <table class='table table-hover table-bordered container'>
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Product ID</th>
+          <th scope="col">Rating</th>
+          <th scope="col">Review</th>
+          <th scope="col">Number of Upvotes</th>
+          <th scope="col">Type</th>
+          <th scope="col">Actions</th>
+          <th scope="col">Image</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for review in reviews %}
+
+        <tr>
+          <td><a href="{{ url_for('products.product_page', k=review.pid) }}" type="button" class="btn btn-light">{{
+              review.id }}</a></td>
+          <td>{{ review.rating }}</td>
+          <td>{{ review.review }}</td>
+          <td>{{ review.num_votes }}</td>
+          <td>{{ review.typeshit }}</td>
+          {% if review.imagepath != "" %}
+          <td>
+            <img src="{{review.imagepath}}" alt="Review Image" width="200" height="200">
+          </td>
+          {% else %}
+          <td>No Image</td>
+          {% endif %}
+
+          <td>
+            <a href="{{ url_for('reviews.look_at_product_review_and_edit_product_review', uid = current_user.id, product_id = review.pid) }}"
+              class="btn btn-primary">Edit</a>
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+
+    {% for review in sortedreviews %}
+
+    <tr>
+      <td><a href="{{ url_for('products.product_page', k=review.pid) }}" type="button" class="btn btn-light">{{
+          review.id }}</a></td>
+      <td>{{ review.rating }}</td>
+      <td>{{ review.review }}</td>
+      <td>{{ review.num_votes }}</td>
+      <td>{{ review.typeshit }}</td>
+      {% if review.imagepath != "" %}
+      <td>
+        <img src="{{review.imagepath}}" alt="Review Image" width="200" height="200">
+      </td>
+      {% else %}
+      <td>No Image</td>
+      {% endif %}
+
+      <td>
+        <a href="{{ url_for('reviews.look_at_product_review_and_edit_product_review', uid = current_user.id, product_id = review.pid) }}"
+          class="btn btn-primary">Edit</a>
+      </td>
+
+    </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <br><br>
+    <p><a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Go Back</a></p>
+    <p><a href="{{ url_for('index.index') }}" type="button" class="btn btn-light">Go Home</a></p>
+
+    {% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>you aint got no reviews buddy</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Reviews Button</title>
+</head>
+
+<body>
+  <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('index.history',page=1) }}'">Add
+    a Review from your Purchased Items</button>
+</body>
+
+</html>
+<p><a href="{{ url_for('index.index') }}" class="btn btn-light">Go Back</a></p>
+
+{% endblock %}

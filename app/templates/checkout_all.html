@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2>Order:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Availiblilty</th>
+      <th scope="col"> Final Unit Price</th>
+      <th scope="col"> Final Total Price</th>
+      <th scope="col">Seller ID</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for i in range(cart|length) %}
+    <tr>
+      <th scope="row">{{cart[i].product}}</th>
+      <td>{{cart[i].quantity}}</td>
+      <td>
+        {% if item_availability[i] >= cart[i].quantity %}
+        Available
+        {% else %}
+        {% if item_availability[i] == 0 %}
+        <span style="color: red;"> (Out of stock)</span>
+        {% else %}
+        <span style="color: red;"> Low stock, only {{ item_availability[i] }} left!</span>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>{{cart[i].unit_price}}</td>
+      <td>
+        {% if item_availability[i] >= cart[i].quantity %}
+        {{cart[i].total_price}}
+        {% else %}
+        {% if item_availability[i] == 0 %}
+        <span style="color: red;"> - </span>
+        {% else %}
+        <span style="color: red;"> {{item_availability[i] * cart[i].unit_price}}</span>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>{{cart[i].seller}}</td>
+      <td>
+        <form method="post" action="{{ url_for('carts.delete_item_from_cart', cart_id=cart[i].id) }}">
+          <input type="hidden" name="cart_id" value="{{ cart[i].id }}">
+          <input type="submit" value="Remove" class="btn btn-light">
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if not all_items_not_available %}
+<div class="alert alert-warning" role="alert">
+  Warning: Some items in your cart are not available!
+</div>
+{% endif %}
+
+<form method="post" action="{{ url_for('carts.checkout_all_items') }}">
+  <div class="form-group">
+    <label for="promoCode">Promo Code:</label>
+    <input type="text" class="form-control" id="promoCode" name="promoCode">
+  </div>
+  <button type="submit" class="btn btn-primary">Apply Promo Code</button>
+</form>
+
+<div class="cart-total-section">
+  <p class="cart-total-text">Cart Total:</p>
+  <p class="cart-total-value">{{ total }}</p>
+</div>
+
+<p><a href="{{ url_for('carts.cart') }}" type="button" class="btn btn-light">Back to Cart</a></p>
+<p><a href="{{ url_for('carts.submit_full_order', final_total = total) }}" type="button" class="btn btn-light">Submit
+    Order</a></p>
+
+
+<br><br>
+
+{% endblock %}

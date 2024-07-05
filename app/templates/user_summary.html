@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Displays User's Public Details -->
+<br></br>
+<h1><b>{{ full_name }}</b>'s Public Page</h1>
+<br></br>
+<h2><b>Account ID:</b> {{ id }}</h2>
+<h2><b>Address:</b> {{ address }}</h2>
+<br></br>
+
+<!-- Displays reviews written by the user -->
+<h1><b>Reviews written</b> by {{ full_name }}</h1>
+<table data-order='[[ 6, "desc" ]]' id="reviewsW" class='table table-striped table-hover table-bordered'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Review ID</th>
+      <th scope="col">User ID</th>
+      <th scope="col">Product ID</th>
+      <th scope="col">Review</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Time Reviewed</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews_given%}
+    <tr>
+      <td>{{reviews.id}}</td>
+      <td>{{reviews.uid}}</td>
+      <td>{{reviews.pid}}</td>
+      <td>{{reviews.review}}</td>
+      <td>{{reviews.rating}}</td>
+      <td>{{reviews.time_reviewed}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br></br>
+
+<!-- Displays reviews received by the user (inc. historically for current users of utype = 'user') -->
+<h1><b>Reviews received</b> by {{ full_name }}</h1>
+<table data-order='[[ 6, "desc" ]]' id="reviewsR" class='table table-striped table-hover table-bordered'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Review ID</th>
+      <th scope="col">User ID</th>
+      <th scope="col">Product ID</th>
+      <th scope="col">Review</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Time Reviewed</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in reviews_received%}
+    <tr>
+      <th scope="row">{{review.id}}</th>
+      <td>{{reviews.uid}}</td>
+      <td>{{reviews.pid}}</td>
+      <td>{{reviews.review}}</td>
+      <td>{{reviews.rating}}</td>
+      <td>{{reviews.time_reviewed}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<br></br>
+<br></br>
+
+
+{% endblock %}

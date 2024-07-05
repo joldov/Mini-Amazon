@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if sort == 'default' %}
+    <p><a href="{{ url_for('users.list_users', page=page) }}" class="btn btn-light">Go Back</a></p>
+    {% endif %}
+
+    {% if sort == 'name' %}
+    <p><a href="{{ url_for('users.list_users_by_name', page=page) }}" class="btn btn-light">Go Back</a></p>
+    {% endif %}
+</div>
+{% if seller and total > 0 %}
+<div class="container mt-5">
+    <h2>Seller Info:</h2>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">User ID</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">{{ user.id }}</th>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.address }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="mt-4">Seller Reviews:</h2>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Reviewer ID</th>
+                <th scope="col">Review</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <th scope="row">{{ review.rater_id }}</th>
+                <td>{{ review.review }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% elif seller and total == 0 %}
+<div class="container mt-5">
+    <h2>Seller Info:</h2>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">User ID</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">{{ user.id }}</th>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.address }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="mt-4">No Reviews:</h2>
+</div>
+
+{% else %}
+<div class="container mt-5">
+    <h2>User Info:</h2>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">User ID</th>
+                <th scope="col">User Name</th>
+                <th scope="col">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">{{ user.id }}</th>
+                <td>{{ user.full_name }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}

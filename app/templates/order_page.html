@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="text-center mb-4">Purchase Details</h1>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Purchase ID:</h4>
+            <p>{{ purchase.id }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Product ID:</h4>
+            <p>{{ purchase.pid }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Product Name:</h4>
+            <p>{{ purchase.name }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Seller ID:</h4>
+            <p>{{ purchase.sid }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Seller Name:</h4>
+            <p>{{ seller }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Price:</h4>
+            <p>{{ purchase.amount }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Number of Items:</h4>
+            <p>{{ purchase.number_of_items }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Status:</h4>
+            <p>{{ purchase.status }}</p>
+          </div>
+
+          <hr>
+
+          {% if sort == 'default' %}
+          <div class="text-center mt-3">
+            <a href="{{ url_for('index.history', page=page) }}" class="btn btn-secondary">Go Back</a>
+          </div>
+          {% endif %}
+
+          {% if sort == 'name' %}
+          <div class="text-center mt-3">
+            <a href="{{ url_for('index.history_by_name', page=page) }}" class="btn btn-secondary">Go Back</a>
+          </div>
+          {% endif %}
+
+          {% if sort == 'price' %}
+          <div class="text-center mt-3">
+            <a href="{{ url_for('index.history_by_price', page=page) }}" class="btn btn-secondary">Go Back</a>
+          </div>
+          {% endif %}
+
+          {% if sort == 'status' %}
+          <div class="text-center mt-3">
+            <a href="{{ url_for('index.history_by_status', page=page) }}" class="btn btn-secondary">Go Back</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+
+<h2>Submit/Edit Seller Review</h2>
+<table class='table table-hover table-bordered container'>
+  {% if seller_review %}
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Seller ID</th>
+      <th scope="col">Seller Rating</th>
+      <th scope="col">Review</th>
+    </tr>
+  </thead>
+  <tbody>
+    <h3>Here is your current review of the seller</h3>
+    <tr>
+      <th scope="row">{{seller_review[0].seller_id}}</th>
+      <td>{{seller_review[0].rating}}</td>
+      <td>{{seller_review[0].review}}</td>
+    </tr>
+  </tbody>
+  {% endif %}
+</table>
+
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.new_review.label }}<br />
+    {{ form.new_review(size=32) }}<br />
+    {{ form.new_rating.label }}<br />
+    {{ form.new_rating(size=32) }} <br />
+    {% if form.errors %}
+    {{form.errors}}
+    {% endif %}
+  </p>
+  {{ form.submit(class_="btn btn-black") }}
+</form>
+
+{% endblock %}

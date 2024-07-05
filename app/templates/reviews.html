@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="text-center mb-4">Enter a User ID To Find Their Reviews!</h1>
+
+  <section>
+    <form action="" method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="form-group">
+        {{ form.user_id.label(class="form-control-label") }}<br>
+        {{ form.user_id(size=32, class="form-control") }}<br>
+        {% if form.errors %}
+        <div class="text-danger">{{ form.errors.user_id }}</div>
+        {% endif %}
+      </div>
+      {{ form.submit(class="btn btn-dark") }}
+    </form>
+
+    <br><br>
+
+    <p><a href="{{ url_for('index.index') }}" class="btn btn-light">Go Back</a></p>
+  </section>
+</div>
+{% endblock %}

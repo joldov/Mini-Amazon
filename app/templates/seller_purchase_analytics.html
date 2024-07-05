@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container mt-4">
+   <h2 class="text-center mb-4"
+      style="text-decoration-line: overline; text-decoration-color: rgb(11, 11, 11); text-decoration-style: stright; font-weight: bold;">
+      Preformance:</h2>
+</div>
+
+<br>
+<canvas id="sellerChart" width="400" height="200"></canvas>
+<script>
+   data = {{ data_for_chart }}
+
+   createChart(data)
+
+   function createChart(data) {
+      var ctx = document.getElementById('sellerChart').getContext('2d');
+      var myChart = new Chart(ctx, {
+         type: 'bar',
+         data: {
+            labels: Array.from({ length: data.length }, (_, i) => `${i + 1} Stars`),
+            datasets: [{
+               //label: 'Rating',
+               data: data,
+               backgroundColor: 'rgba(75, 192, 192, 0.2)',
+               borderColor: 'rgba(75, 192, 192, 1)',
+               borderWidth: 1
+            }]
+         },
+         options: {
+            indexAxis: 'y',
+            scales: {
+               y: { min: 0, max: 1, ticks: .1 }
+            }
+         }
+      });
+   }
+</script>
+
+
+{% endblock %}

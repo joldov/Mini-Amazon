@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% set displaymin = -1 %}
+{% set displaymax = 9 %}
+
+{% block content %}
+
+<p>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+<ul>
+  {% for message in messages %}
+  <li>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+</p>
+
+<br><br>
+{% if current_user.is_authenticated %}
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.product_list', limit=0) }}'">View All Products</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.product_search') }}'">Search Products</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('index.history',page=1) }}'">Purchase History</button>
+
+  <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('carts.cart') }}'">View
+    Cart</button>
+
+  <button type="button" class="btn btn-light"
+    onclick="window.location.href='{{ url_for('inventory.inventory') }}'">Inventory</button>
+
+    <button type="button" class="btn btn-light"
+      onclick="window.location.href='{{ url_for('reviews.all_reviews', uid=current_user.id, page=1) }}'">Your
+      Reviews</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.get_balance', uid=current_user.id) }}'">Bank Info</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.get_profile', uid=current_user.id) }}'">See Profile</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.list_users', page=1) }}'">See All Users</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('index.purchase_analytics', uid=current_user.id) }}'">Purchase Analytics</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.category') }}'">Add Category</button>
+  </div>
+
+<br></br>
+{% else %}
+<p><a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log In</a> to Buy and See Your Info!</p>
+{% endif %}
+
+
+<br></br>
+
+
+
+{% endblock %}

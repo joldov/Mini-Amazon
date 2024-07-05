@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title }}</title>
+</head>
+
+<body>
+    <h1>{{ title }}</h1>
+
+    {% if recent_feedback %}
+    <h2>Recent Feedback:</h2>
+    <ul>
+        {% for feedback_entry in recent_feedback %}
+        <li>
+            <strong>Feedback Date:</strong> {{ feedback_entry.creation_date }}<br>
+            <strong>Feedback:</strong> {{ feedback_entry.feedback_text }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No recent feedback available.</p>
+    {% endif %}
+
+    <a href="{{ url_for('index.index') }}">Back to Home</a>
+</body>
+
+</html>
+
+
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Enter a Seller ID To Find Their Reviews!</h1>
+
+<section>
+  <form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.user_id.label }}<br />
+      {{ form.user_id(size=32) }}<br />
+      {% if form.errors %}
+      {{form.errors}}
+      {% endif %}
+    </p>
+    {{ form.submit(class_="btn btn-black") }}
+  </form>
+  {% endblock %}
+</section>

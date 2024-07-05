@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<br><br>
+{% if current_user.is_authenticated %}
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.product_list', limit=0) }}'">View All Products</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.product_search') }}'">Search Products</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('index.history',page=1) }}'">Purchase History</button>
+
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('carts.cart') }}'">View Cart</button>
+
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('inventory.inventory') }}'">Inventory</button>
+
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('reviews.all_reviews', uid=current_user.id) }}'">Your Reviews</button>
+
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.get_balance', uid=current_user.id) }}'">Bank Info</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.get_profile', uid=current_user.id) }}'">See Profile</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('users.list_users', page=1) }}'">See All Users</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('index.purchase_analytics', uid=current_user.id) }}'">Purchase Analytics</button>
+    <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for('products.category') }}'">Add Category</button>
+  </div>
+  <br></br>
+{% else %}
+  <p><a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a> to see your purchase history!</p>
+  <p><a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a> to see your inventory!</p>
+{% endif %}
+
+<!--Search-->
+
+<h1>Add Category</h1>
+
+<p>Category name:</p>
+
+<form action="{{ url_for('products.add_category') }}" method="POST">
+  <input type="text" name="cat_name"></input>
+  <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+</form>
+
+<br></br>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="text-center mb-4">Checkout Details</h1>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Product ID:</h4>
+            <p>{{ item.product_id }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Product Name:</h4>
+            <p>{{ item.product }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Seller ID:</h4>
+            <p>{{ item.seller }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Seller Name:</h4>
+            <p>{{ seller }}</p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Price:</h4>
+            <p>{% if item_availability >= item.quantity %}
+              {{item.total_price}}
+              {% else %}
+              {% if item_availability == 0 %}
+              <span style="color: red;"> (Out of stock!)</span>
+              {% else %}
+              <span style="color: red;"> {{price}}</span>
+              {% endif %}
+              {% endif %}
+            </p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Number of Items:</h4>
+            <p>{% if item_availability >= item.quantity %}
+              {{item.quantity}}
+              {% else %}
+              {% if item_availability == 0 %}
+              <span style="color: red;"> (Out of stock!)</span>
+              {% else %}
+              <span style="color: red;"> {{ item_availability }}</span>
+              {% endif %}
+              {% endif %}
+            </p>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Item Availability:</h4>
+            <p>{% if item_availability >= item.quantity %}
+              Available
+              {% else %}
+              {% if item_availability == 0 %}
+              <span style="color: red;"> (Out of stock)</span>
+              {% else %}
+              <span style="color: red;"> (Low stock, only {{ item_availability }} left! )</span>
+              {% endif %}
+              {% endif %}
+            </p>
+          </div>
+
+          <hr>
+        </div>
+      </div>
+      <br></br>
+      <p><a href="{{ url_for('carts.cart') }}" class="btn btn-light">Back to Cart</a></p>
+
+      <p><a href="{{ url_for('carts.submit_order',
+                                id=item.id,
+                                uid=item.user_id,
+                                pid=item.product_id,
+                                sid=item.seller,
+                                price=item.total_price,
+                                quantity= min_quantity)}}" class="btn btn-light">Submit Order</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

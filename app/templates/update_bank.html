@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  {% for message in get_flashed_messages() %}
+  <div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{ message }}
+  </div>
+  {% endfor %}
+
+  {% block page_content %}{% endblock %}
+</div>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h1 class="text-center mb-4">Update Bank Info</h1>
+
+      <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.deposit.label(class="form-control-label") }}<br>
+          {{ form.deposit(size=32, class="form-control") }}<br>
+          {% for error in form.deposit.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.withdraw.label(class="form-control-label") }}<br>
+          {{ form.withdraw(size=64, class="form-control") }}<br>
+          {% for error in form.withdraw.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+
+        <div class="text-center">
+          <p>{{ form.submit(class="btn btn-primary") }}</p>
+        </div>
+      </form>
+
+      <hr>
+
+      <div class="text-center mt-3">
+        <a href="{{ url_for('users.get_balance', uid=current_user.id) }}" class="btn btn-secondary">Back</a>
+        <a href="{{ url_for('index.index') }}" class="btn btn-secondary">Go Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
